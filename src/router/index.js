@@ -43,7 +43,7 @@ const routes = [
     path: '/infoUser',
     name: 'InfoUser',
     beforeEnter: (to, from, next) => {
-      if (store.state.isLogin || store.state.token || localStorage.getItem('token')) {
+      if (localStorage.getItem('cookies')) {
         next()
       } else {
         next('/login')

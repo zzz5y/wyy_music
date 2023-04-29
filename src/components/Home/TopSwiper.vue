@@ -8,24 +8,25 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
-import {reactive, onMounted } from 'vue';
-import {getBanner} from '@/request/api/home.js'
-  export default {
+import axios from 'axios'
+import { reactive, onMounted } from 'vue'
+import { getBanner } from '@/request/api/home.js'
+export default {
   setup() {
     const state = reactive({
-      images:[
-      'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
-      'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
-    ]});
-    onMounted(async ()=>{
-      let res=await getBanner();
-      state.images=res.data.banners
-      console.log(res);
+      images: [
+        'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+        'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
+      ],
     })
-    return { state };
+    onMounted(async () => {
+      let res = await getBanner()
+      state.images = res.data.banners
+      console.log(res)
+    })
+    return { state }
   },
-};
+}
 </script>
 <style lang="less">
 #swiperTop {

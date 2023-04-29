@@ -1,89 +1,157 @@
 <template>
-  <div class="login">
-    <div class="loginTop">欢迎登录</div>
-    <div class="loginContent">
-      <input
-        type="text"
-        name="phone"
-        class="phone"
-        v-model="phone"
-        placeholder="请输入手机号码"
-      />
-      <input
-        type="password"
-        name="passworld"
-        class="passworld"
-        v-model="password"
-        placeholder="请输入密码"
-      />
-      <button class="btn" @click="Login">登录</button>
+  <div class="bbox">
+    <div class="top">
+      <button class="but" @click="login">登录</button>
+    </div>
+    <div class="mid">
+      <div class="left">
+        <img
+          src="
+          https://p5.music.126.net/obj/wo3DlcOGw6DClTvDisK1/9643571155/525c/faac/2dc6/fe695c03c7c358ddaa4651736b26a55f.png"
+          alt=""
+        />
+      </div>
+      <div class="right">
+        <div class="rightt">扫码登陆</div>
+        <img :src="qrimgs" alt="" style="width: 200px; height: 200px" />
+        <div class="rightb">
+          使用&nbsp;<a
+            href="https://music.163.com/#/download"
+            style="color: skyblue"
+            >网易云app</a
+          >
+          扫码登录
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import { getLoginUser } from '@/request/api/home.js'
+import { ref } from 'vue'
+import {
+  qrCodeLoginKey,
+  qrCodeLoginImg,
+  qrCodeLoginCheck,
+} from '@/request/api/login.js'
+import router from 'vue'
+import { useStore } from 'vuex'
+const store = useStore()
+
 export default {
-  data() {
-    return {
-      phone: '',
-      password: '',
+  setup() {
+    const unikey = ref('')
+    const qrurl = ref('')
+    const qrimgs = ref('')
+    const qrCheckData = ref({})
+    const isLogin = ref(false)
+
+    const login = async () => {
+      let nowtime = Date.now()
+      let key = (await qrCodeLoginKey(nowtime)).data.data.unikey
+      unikey.value = key
+
+      let sginImgURL = (await qrCodeLoginImg(key)).data.data.qrimg
+      qrimgs.value = sginImgURL
+
+      let check = setInterval(async () => {
+        let nowtime2 = new Date().getTime()
+        let res = await qrCodeLoginCheck(key, nowtime2).then()
+        console.log(res.data.message, '---')
+
+        if (res.data.code === 800) {
+          alert(res.data.message)
+          clearInterval(check)
+        }
+        if (res.data.code === 803) {
+          console.log(res)
+          localStorage.setItem('cookies', res.data.cookie)
+          alert(res.data.message)
+          clearInterval(check)
+        }
+      }, 3000)
     }
-  },
-  methods: {
-    Login: async function () {
-      let res = await this.$store.dispatch('getLogin', {
-        phone: this.phone,
-        password: this.password,
-      })
-      console.log(res)
-      if (res.data.code === 200) {
-        //如果返回的code等于200，说明登录成功，就跳转个人中心页面
-        this.$store.commit('updateIsLogin', true)
-        this.$store.commit('updateToken', res.data.token)
-        let result = await getLoginUser(res.data.account.id)
-        console.log(result)
-        this.$store.commit('updateUser', result)
-        this.$router.push('/infoUser')
-      } else {
-        alert('手机号码或者密码错误')
-        this.password = ''
-      }
-    },
+
+    const initQrimgs = async () => {
+      let nowtime = Date.now()
+      let key = (await qrCodeLoginKey(nowtime)).data.data.unikey
+      unikey.value = key
+      let sginImgURL = (await qrCodeLoginImg(key, nowtime)).data.data.qrimg
+      qrimgs.value = sginImgURL
+    }
+
+    initQrimgs() // 初始化二维码
+
+    return {
+      unikey,
+      qrurl,
+      qrimgs,
+      qrCheckData,
+      isLogin,
+      login,
+    }
   },
 }
 </script>
-<style lang="less" scoped>
-.login {
-  width: 100%;
-  height: 13.34rem;
-  padding: 0.2rem;
+
+<style lang="scss" scoped>
+.bbox {
+  margin: auto;
+  position: relative;
+  width: 375px;
+  height: 667px;
+  background-color: #fff;
+  border: #333 solid 1px;
+}
+.top {
+  flex: 1;
+  width: 375px;
+  height: 50px;
+  background-color: rgb(49, 35, 35);
+  color: white;
+}
+.topp {
+  font-weight: bold;
+  margin-left: 18px;
+  margin-right: 18px;
+  padding-top: 16px;
   display: flex;
+  justify-content: space-between;
+}
+.mid {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.left img {
+  width: 125px;
+  height: 220px;
+  margin-left: 20px;
+}
+.right {
+  margin-left: 20px;
+  display: flex;
+  align-content: space-between;
   flex-direction: column;
-  align-items: center;
-  background-color: rgb(248, 97, 97);
-  .loginTop {
-    margin-top: 1rem;
-    font-size: 1rem;
-    color: #fff;
-  }
-  .loginContent {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    margin-top: 2rem;
-    .phone,
-    .passworld {
-      width: 5rem;
-      height: 1rem;
-      border: 0.02rem solid #999;
-    }
-    .btn {
-      width: 2rem;
-      height: 0.6rem;
-    }
-  }
+}
+.rightt {
+  margin-left: 5px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  // width: 200px;
+  // height: 24px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.rightb {
+  margin-left: 15px;
+}
+.but {
+  position: absolute;
+  bottom: 0;
+  margin-left: 10px;
+}
+.mid {
+  margin-left: 50px;
 }
 </style>

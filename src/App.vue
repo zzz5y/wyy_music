@@ -1,23 +1,23 @@
 <template>
-  <router-view/>
-  <FooterMusic v-show="$store.state.isFooterMusic "></FooterMusic>
+  <router-view />
+  <FooterMusic v-show="$store.state.isFooterMusic"></FooterMusic>
 </template>
 <script>
-import FooterMusic from './components/item/FooterMusic.vue';
-export default{
-  components:{
-    FooterMusic:FooterMusic,
+import FooterMusic from './components/item/FooterMusic.vue'
+export default {
+  components: {
+    FooterMusic: FooterMusic,
   },
 }
 </script>
 <style lang="less">
-*{
+* {
   margin: 0;
-  padding:0;
+  padding: 0;
   box-sizing: border-box;
 }
-.icon{
-  width:.5rem;
-  height:.5rem;
+.icon {
+  width: 0.5rem;
+  height: 0.5rem;
 }
 </style>

@@ -1,9 +1,9 @@
 import { createStore } from 'vuex'
-import {getMusicLyric} from '@/request/api/item.js'
+import { getMusicLyric } from '@/request/api/item.js'
 import { getPhoneLogin } from '@/request/api/home';
 export default createStore({
   state: {
-    playList:[{
+    playList: [{
       al: {
         id: 74674741,
         name: "生长",
@@ -13,73 +13,69 @@ export default createStore({
       },
       id: 486999661,
       name: "莫妮卡",
-      ar:[{
+      ar: [{
         name: "柳爽"
       }],
     }],
-    playListIndex:0,
-    isbtnShow:true,
-    detailShow:false,
-    lyricList:{
+    playListIndex: 0,
+    isbtnShow: true,
+    detailShow: false,
+    lyricList: {
 
     },
-    currentTime:0,
-    duration:0,
-    isLogin:false,
-    isFooterMusic:true,
-    user:{},
+    currentTime: 0,
+    duration: 0,
+    isLogin: false,
+    isFooterMusic: true,
+    user: {},
 
   },
   getters: {
   },
   mutations: {
-    updateIsbtnShow:function(state,value){
-      state.isbtnShow=value
+    updateIsbtnShow: function (state, value) {
+      state.isbtnShow = value
     },
-    pushPlayList:function(state,value){
+    pushPlayList: function (state, value) {
       state.playList.push(value);
     }
     ,
-    updatePlayList:function(state,value){
-    state.playList=value;
-    console.log(state.playList);
+    updatePlayList: function (state, value) {
+      state.playList = value;
+      console.log(state.playList);
     },
-    updatePlayListIndex:function(state,value){
-      state.playListIndex=value;
+    updatePlayListIndex: function (state, value) {
+      state.playListIndex = value;
     },
-    updateDetailShow:function(state){
-      state.detailShow=!state.detailShow
+    updateDetailShow: function (state) {
+      state.detailShow = !state.detailShow
     },
-    updateLyricList:function(state,value){
-      state.lyricList=value
+    updateLyricList: function (state, value) {
+      state.lyricList = value
     },
-    updateCurrentTime:function(state,value){
+    updateCurrentTime: function (state, value) {
       //console.log(state.currentTime);
-      state.currentTime=value;
+      state.currentTime = value;
     },
-    updateDuration:function(state,value){
-      state.duration=value;
+    updateDuration: function (state, value) {
+      state.duration = value;
     },
-    updateIsLogin:function(state,value){
-      state.isLogin=true;
-    },
-    updateToken:function(state,value){
-      state.token=value;
-      localStorage.setItem('token',state.token)
+    updateIsLogin: function (state, value) {
+      state.isLogin = true;
     }
   },
   actions: {
-    getLyric:async function(context,value){
-      let res =await getMusicLyric(value);
+    getLyric: async function (context, value) {
+      let res = await getMusicLyric(value);
       console.log(res);
-      context.commit("updateLyricList",res.data.lrc)
+      context.commit("updateLyricList", res.data.lrc)
     },
-    getLogin:async function(context,value){
-      let res=await getPhoneLogin(value);
+    getLogin: async function (context, value) {
+      let res = await getPhoneLogin(value);
       //console.log(res);
     },
-    updateUser:function(state,value){
-      state.user=value;
+    updateUser: function (state, value) {
+      state.user = value;
     }
   },
   modules: {

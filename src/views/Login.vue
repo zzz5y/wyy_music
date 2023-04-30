@@ -35,6 +35,7 @@ import {
 } from '@/request/api/login.js'
 import router from 'vue'
 import { useStore } from 'vuex'
+import { onMounted } from 'vue'
 const store = useStore()
 
 export default {
@@ -44,6 +45,10 @@ export default {
     const qrimgs = ref('')
     const qrCheckData = ref({})
     const isLogin = ref(false)
+
+    onMounted(async () => {
+      await initQrimgs() // 初始化二维码
+    })
 
     const login = async () => {
       let nowtime = Date.now()
@@ -78,9 +83,6 @@ export default {
       let sginImgURL = (await qrCodeLoginImg(key, nowtime)).data.data.qrimg
       qrimgs.value = sginImgURL
     }
-
-    initQrimgs() // 初始化二维码
-
     return {
       unikey,
       qrurl,

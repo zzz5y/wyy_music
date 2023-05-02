@@ -82,6 +82,21 @@ export default {
       unikey.value = key
       let sginImgURL = (await qrCodeLoginImg(key, nowtime)).data.data.qrimg
       qrimgs.value = sginImgURL
+      let check = setInterval(async () => {
+        let nowtime2 = new Date().getTime()
+        let res = await qrCodeLoginCheck(key, nowtime2).then()
+        console.log(res.data.message, '---')
+        if (res.data.code === 800) {
+          alert(res.data.message)
+          clearInterval(check)
+        }
+        if (res.data.code === 803) {
+          console.log(res)
+          localStorage.setItem('cookies', res.data.cookie)
+          alert(res.data.message)
+          clearInterval(check)
+        }
+      }, 3000)
     }
     return {
       unikey,
